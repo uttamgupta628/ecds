@@ -1,7 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import brandLevel from '../assets/brandLevel.png';
 
 const BrandHighlights: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          } else {
+            setIsVisible(false);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   const leftCards = [
     {
       title: "Sustainability at Root",
@@ -33,9 +61,11 @@ const BrandHighlights: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section ref={sectionRef} className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className={`text-center mb-12 transition-all duration-1000 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
+        }`}>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Brand Highlights Value
           </h2>
@@ -45,13 +75,19 @@ const BrandHighlights: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+          {/* Left Cards */}
           <div className="space-y-6">
             {leftCards.map((card, index) => (
-              <div 
+              <div
                 key={index}
-                className="p-6 rounded-lg shadow-md"
+                className={`p-6 rounded-lg shadow-md transform transition-all duration-700 hover:scale-105 hover:shadow-xl ${
+                  isVisible 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 -translate-x-20'
+                }`}
                 style={{
-                  background: 'linear-gradient(to bottom right, #D4B484, #405E42)'
+                  background: 'linear-gradient(to bottom right, #D4B484, #405E42)',
+                  transitionDelay: `${index * 150}ms`
                 }}
               >
                 <h3 className="text-white font-bold text-lg mb-2">
@@ -63,23 +99,37 @@ const BrandHighlights: React.FC = () => {
               </div>
             ))}
           </div>
+
+          {/* Center Image */}
           <div className="flex justify-center">
-            <div className="relative">
-              <img 
+            <div className={`relative transform transition-all duration-1000 ${
+              isVisible 
+                ? 'opacity-100 scale-100 rotate-0' 
+                : 'opacity-0 scale-75 rotate-3'
+            }`}
+            style={{ transitionDelay: '300ms' }}
+            >
+              <img
                 src={brandLevel}
-                alt="ECDS Mobile App" 
-                className="w-full max-w-sm rounded-lg shadow-2xl"
+                alt="ECDS Mobile App"
+                className="w-full max-w-sm rounded-lg shadow-2xl hover:shadow-3xl transition-shadow duration-300"
               />
-              
             </div>
           </div>
+
+          {/* Right Cards */}
           <div className="space-y-6">
             {rightCards.map((card, index) => (
-              <div 
+              <div
                 key={index}
-                className="p-6 rounded-lg shadow-md"
+                className={`p-6 rounded-lg shadow-md transform transition-all duration-700 hover:scale-105 hover:shadow-xl ${
+                  isVisible 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 translate-x-20'
+                }`}
                 style={{
-                  background: 'linear-gradient(to bottom right, #D4B484, #405E42)'
+                  background: 'linear-gradient(to bottom right, #D4B484, #405E42)',
+                  transitionDelay: `${index * 150}ms`
                 }}
               >
                 <h3 className="text-white font-bold text-lg mb-2">

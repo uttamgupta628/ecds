@@ -1,10 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import heroSectionImg from "../assets/heroSectionImg.png"
 
 const HeroSection: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          } else {
+            setIsVisible(false);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <section className="relative bg-gray-100 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+    <section ref={sectionRef} className="relative bg-gray-100 overflow-hidden">
+      <div 
+        className={`max-w-7xl mx-auto transition-all duration-[2000ms] ease-out ${
+          isVisible 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 -translate-y-96'
+        }`}
+      >
         <div className="min-h-[500px] lg:min-h-[600px]">
           <div
             className="relative bg-cover bg-center bg-no-repeat min-h-[500px] lg:min-h-[600px]"
@@ -20,7 +54,6 @@ const HeroSection: React.FC = () => {
                 <p className="text-gray-600 text-base lg:text-lg mb-8">
                   From breathable wall panels to restorat 764×240 and eco-conscious materials, ECDS delivers patented solutions for a cleaner, healthier future in India
                 </p>
-
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 rounded font-semibold transition-colors duration-300 shadow-md hover:shadow-lg">
                     EXPLORE OUR BRANDS
