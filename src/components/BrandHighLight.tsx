@@ -89,7 +89,7 @@ const BrandHighlights = () => {
   const maxTranslate = 100;
   
   const getLeftCardTranslate = (index: number) => {
-    const stagger = 0.5; // Each card moves 30% less than the previous
+    const stagger = 0.5;
     const cardProgress = scrollProgress * (1 - index * stagger);
     return baseOffset + (-cardProgress * maxTranslate);
   };
@@ -101,8 +101,8 @@ const BrandHighlights = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-12 md:py-16 bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} className="py-12 md:py-16 bg-white min-h-screen overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className={`text-center mb-8 md:mb-12 transition-all duration-1000 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
         }`}>
@@ -114,20 +114,20 @@ const BrandHighlights = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Left Cards */}
-          <div className="space-y-4 md:space-y-6 order-1 lg:order-1">
+          <div className="space-y-4 md:space-y-6 order-1 lg:order-1 overflow-hidden">
             {leftCards.map((card, index) => (
               <div
                 key={index}
                 className={`p-4 md:p-6 rounded-lg shadow-md hover:scale-105 hover:shadow-xl ${
                   isVisible 
                     ? 'opacity-100' 
-                    : 'opacity-0 -translate-x-20'
+                    : 'opacity-0'
                 }`}
                 style={{
                   background: 'linear-gradient(to bottom right, #D4B484, #405E42)',
-                  transform: isVisible ? `translateX(${getLeftCardTranslate(index)}px)` : 'translateX(-80px)',
+                  transform: isVisible ? `translateX(${Math.min(0, getLeftCardTranslate(index))}px)` : 'translateX(-80px)',
                   transition: isVisible ? 'transform 0.3s ease-out, opacity 0.7s, box-shadow 0.3s' : 'all 0.7s',
                   transitionDelay: isVisible ? '0ms' : `${index * 150}ms`,
                   zIndex: 1
@@ -144,7 +144,7 @@ const BrandHighlights = () => {
           </div>
 
           {/* Center Video */}
-          <div className="flex justify-center order-2 lg:order-2">
+          <div className="flex justify-center order-2 lg:order-2 overflow-hidden">
             <div className={`relative transform transition-all duration-1000 w-full max-w-sm ${
               isVisible 
                 ? 'opacity-100 scale-100 rotate-0' 
@@ -152,34 +152,41 @@ const BrandHighlights = () => {
             }`}
             style={{ transitionDelay: '300ms', zIndex: 10 }}
             >
-              <div className="w-full rounded-lg shadow-2xl hover:shadow-3xl transition-shadow duration-300 overflow-hidden bg-black">
-                <video
-                  className="w-full h-auto"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                >
-                  <source src={video} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+              <div 
+                className="w-full rounded-lg shadow-2xl hover:shadow-3xl transition-shadow duration-300 overflow-hidden p-1"
+                style={{
+                  background: 'linear-gradient(to bottom right, #D4B484, #405E42)'
+                }}
+              >
+                <div className="rounded-md overflow-hidden bg-black">
+                  <video
+                    className="w-full h-auto"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  >
+                    <source src={video} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Right Cards */}
-          <div className="space-y-4 md:space-y-6 order-3 lg:order-3">
+          <div className="space-y-4 md:space-y-6 order-3 lg:order-3 overflow-hidden">
             {rightCards.map((card, index) => (
               <div
                 key={index}
                 className={`p-4 md:p-6 rounded-lg shadow-md hover:scale-105 hover:shadow-xl ${
                   isVisible 
                     ? 'opacity-100' 
-                    : 'opacity-0 translate-x-20'
+                    : 'opacity-0'
                 }`}
                 style={{
                   background: 'linear-gradient(to bottom right, #D4B484, #405E42)',
-                  transform: isVisible ? `translateX(${getRightCardTranslate(index)}px)` : 'translateX(80px)',
+                  transform: isVisible ? `translateX(${Math.max(0, getRightCardTranslate(index))}px)` : 'translateX(80px)',
                   transition: isVisible ? 'transform 0.3s ease-out, opacity 0.7s, box-shadow 0.3s' : 'all 0.7s',
                   transitionDelay: isVisible ? '0ms' : `${index * 150}ms`,
                   zIndex: 1
